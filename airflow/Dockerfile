@@ -21,7 +21,10 @@ LABEL name="$NAME" \
       io.k8s.display-name="$NAME" \
       io.openshift.tags="$TAGS"
 
+#
 # Prepare the image
+#
+
 ENV LC_ALL="en_US.UTF-8" \
     LANG="en_US.UTF-8" \
     HOME="/usr/local/app" \
@@ -45,22 +48,27 @@ RUN yum install -y dnf
 # Additional packages
 ENV INSTALL_PKGS="autoconf automake make gcc patch unzip python3 python3-devel python3-setuptools python3-pip python3-virtualenv"  
 
+# Copy scripts to /usr/bin
+COPY ./include/ /
+
 RUN mkdir -p ${HOME}/.pki/nssdb && \
     chown -R ${USER_ID}:0 ${HOME}/.pki && \
     dnf -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    dnf -y clean all --enablerepo='*'
+    dnf -y clean all --enablerepo='*' && \
+    fix-rpm-file-permissions
 
-# Reset permissions of modified directories and add default user
-RUN rpm-file-permissions && \
-    useradd -u ${USER_ID} -r -g 0 -d ${HOME} -s /sbin/nologin \
+# Add the default user
+RUN useradd -u ${USER_ID} -r -g 0 -d ${HOME} -s /sbin/nologin \
     -c "Default User" ${USER_NAME} && \
     chown -R ${USER_ID}:0 ${HOME}
 
 # see https://github.com/jupyter/docker-stacks/issues/552
 RUN chmod 766 /etc/passwd && chmod 766 /etc/group
 
+#
 # Install Airflow
+#
 
 ENV AIRFLOW_VERSION=1.10.0 \
     AIRFLOW_HOME="/usr/local/app" \
@@ -73,6 +81,7 @@ ENV PYTHONPATH=${PYTHONPATH:+${PYTHONPATH}:}${AIRFLOW_HOME}
 # - Create a Python virtual environment for use by any application to avoid
 #   potential conflicts with Python packages preinstalled in the main Python
 #   installation.
+
 # - In order to drop the root user, we have to make some directories world
 #   writable as OpenShift default security model is to run the container
 #   under random UID.
@@ -85,8 +94,9 @@ RUN ${PIP_ALIAS} install --no-cache-dir apache-airflow[${AIRFLOW_MODULES}]==${AI
 # Create directories so we can own them when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs && mkdir -p ${AIRFLOW_HOME}/dags
 
-# Copy entrypoint to root
-COPY ./include/ /
+#
+# Finalize the image
+#
 
 RUN chown -R ${USER_ID}:0 ${AIRFLOW_HOME} && \
 	fix-permissions ${AIRFLOW_HOME} -P
