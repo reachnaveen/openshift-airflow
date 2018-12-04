@@ -66,6 +66,14 @@ RUN useradd -u ${USER_ID} -r -g 0 -d ${HOME} -s /sbin/nologin \
 # see https://github.com/jupyter/docker-stacks/issues/552
 RUN chmod 766 /etc/passwd && chmod 766 /etc/group
 
+# Install the OpenShift CLI
+ENV OPENSHIFT_CLI_BINARY="openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit" \
+    OPENSHIFT_VERSION="v3.11.0"
+
+RUN curl -L -0 "https://github.com/openshift/origin/releases/download/${OPENSHIFT_VERSION}/${OPENSHIFT_CLI_BINARY}.tar.gz" | tar -zx -C /tmp && \
+    mv /tmp/${OPENSHIFT_CLI_BINARY}/oc /usr/bin && \
+    mv /tmp/${OPENSHIFT_CLI_BINARY}/kubectl /usr/bin
+    
 #
 # Install Airflow
 #
@@ -94,13 +102,6 @@ RUN ${PIP_ALIAS} install --no-cache-dir ${AIRFLOW_MODULES}==${AIRFLOW_VERSION}
 # Create directories so we can own them when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs && mkdir -p ${AIRFLOW_HOME}/dags
 
-# Install the OpenShift CLI
-ENV OPENSHIFT_CLI_BINARY="openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit" \
-    OPENSHIFT_VERSION="v3.11.0"
-
-RUN curl -L -0 "https://github.com/openshift/origin/releases/download/${OPENSHIFT_VERSION}/${OPENSHIFT_CLI_BINARY}.tar.gz" | tar -zx -C /tmp && \
-    mv /tmp/${OPENSHIFT_CLI_BINARY}/oc /usr/bin && \
-    mv /tmp/${OPENSHIFT_CLI_BINARY}/kubectl /usr/bin
 #
 # Finalize the image
 #
