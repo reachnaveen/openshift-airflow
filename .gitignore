@@ -1,3 +1,6 @@
+stuff.md
+airflow-secrets.yaml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -102,5 +105,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-
-stuff.md
