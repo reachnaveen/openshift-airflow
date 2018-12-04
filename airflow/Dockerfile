@@ -89,7 +89,7 @@ RUN virtualenv-$PYTHON_VERSION ${AIRFLOW_HOME} && \
     chown -R ${USER_ID}:0 ${AIRFLOW_HOME} && \
     fix-permissions ${AIRFLOW_HOME} -P
 
-ENV AIRFLOW_MODULES="apache-airflow['crypto','kubernetes','postgres','s3','gcp_api']"
+ENV AIRFLOW_MODULES=apache-airflow['crypto','kubernetes','postgres','s3','gcp_api']
 
 RUN ${PIP_ALIAS} install --no-cache-dir ${AIRFLOW_MODULES}==${AIRFLOW_VERSION}
 
