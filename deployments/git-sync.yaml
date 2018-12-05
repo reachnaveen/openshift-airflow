@@ -67,9 +67,12 @@ items:
           - env:
             - name: GIT_SYNC_REPO
               value: 'https://github.com/stufff-ml/stufff-dags.git'
-
             - name: GIT_SYNC_DEST
               value: '/usr/local/app/dags'
+            - name: GIT_SYNC_BRANCH
+              value: 'master'
+            - name: GIT_SYNC_WAIT
+              value: '60'
 
             image: ''
             
@@ -77,7 +80,7 @@ items:
             
             resources:
               limits:
-                memory: '512Mi'
+                memory: '128Mi'
 
             volumeMounts:
               - mountPath: /usr/local/app
