@@ -18,7 +18,7 @@ items:
     
     source: 
       git:
-        uri: "https://github.com/stufff-ml/openshift-airflow"
+        uri: "https://github.com/majordomusio/openshift-airflow"
         ref: "master"
       contextDir: "airflow"
     

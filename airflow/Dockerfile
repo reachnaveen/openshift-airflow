@@ -1,11 +1,11 @@
 FROM fedora:28
 
 # Image metadata
-ENV NAME="stufff-ml/openshift-airflow" \
+ENV NAME="majordomusio/openshift-airflow" \
     SUMMARY="Apache Airflow on OpenShift"	\
     DESCRIPTION="Apache Airflow on OpenShift" \
-    MAINTAINER="stufff-ml <hello@ratchet.cc>" \
-    VENDOR="stufff-ml" \
+    MAINTAINER="majordomusio <hello@ratchet.cc>" \
+    VENDOR="majordomusio" \
     TAGS="fedora, airflow" \
     VERSION="1.10" \
     RELEASE="1.10"
