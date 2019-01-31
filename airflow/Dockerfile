@@ -50,7 +50,7 @@ ENV INSTALL_PKGS="autoconf automake make gcc patch unzip python3 python3-devel p
 
 # Copy scripts to /usr/bin
 COPY ./include/ /
-COPY config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
+
 
 RUN mkdir -p ${HOME}/.pki/nssdb && \
     chown -R ${USER_ID}:0 ${HOME}/.pki && \
@@ -86,6 +86,8 @@ ENV AIRFLOW_VERSION=1.10.0 \
     AIRFLOW_MODULES=apache-airflow['crypto','celery','kubernetes','postgres','s3','gcp_api']
 
 ENV PYTHONPATH=${PYTHONPATH:+${PYTHONPATH}:}${AIRFLOW_HOME}
+
+COPY config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 
 # - Create a Python virtual environment for use by any application to avoid
 #   potential conflicts with Python packages preinstalled in the main Python
